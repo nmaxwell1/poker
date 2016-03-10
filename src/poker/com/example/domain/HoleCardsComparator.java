@@ -88,14 +88,14 @@ public class HoleCardsComparator implements Comparator<HoleCards> {
     public int checkStraightFlush(List<Card> boardNHoleCards) {
         Suit flushSuit = getFlushSuit(boardNHoleCards);
         // run low overhead procedures first
-        if(flushSuit == null || checkStraightInList(boardNHoleCards) == 0 ){
-                    return 0;
+        if (flushSuit == null || checkStraightInList(boardNHoleCards) == 0) {
+            return 0;
         }
 
         return checkStraightFlushInList(boardNHoleCards, flushSuit);
     }
-    
-        // returns 0 if no straight or else return high card for straight
+
+    // returns 0 if no straight or else return high card for straight
     public int checkStraightFlushInList(List<Card> list, Suit flushSuit) {
         Map<Integer, Integer> map = rankCountMap(list);
 
@@ -113,7 +113,7 @@ public class HoleCardsComparator implements Comparator<HoleCards> {
         for (int i = 1; i < arrayKeys.length; i++) {
             int cur = (int) arrayKeys[i];
             //check if prev n cur are consecutive and flush suit
-            if (prev + 1 == cur && cardFound(prev,flushSuit, list) && cardFound(cur,flushSuit, list)) {
+            if (prev + 1 == cur && cardFound(prev, flushSuit, list) && cardFound(cur, flushSuit, list)) {
                 prev = cur;
                 counter++;
 
@@ -130,11 +130,29 @@ public class HoleCardsComparator implements Comparator<HoleCards> {
         return howHigh;
     }
 
+    // gives the highest rank for trips in list
+    // i.e if list contains same rank three 
+    public int checkHighestTripsInList(List<Card> list) {
+        Map<Integer, Integer> map = rankCountMap(list);
+        int tripRank = 0;
+
+        Set<Integer> mapKeys = map.keySet();        // gets all the keys of map (unique since it's Set)
+        Object[] arrayKeys = mapKeys.toArray();     // gets all the keys into an arrey
+        int prev = (int) arrayKeys[0];
+
+        for (int i = 0; i < arrayKeys.length; i++) {
+            int key = (int) arrayKeys[i];
+            if(map.get(key) == 3)
+                return key;
+        }    
+        System.out.println("Set map.keySet() is : " + mapKeys.toString());
+        return tripRank;
+    }
+// added a new line
     
-    
-    public boolean cardFound(int rank, Suit suit, List<Card> boardNHoleCards ){
-        for(Card c:boardNHoleCards){
-            if(c.getRank() == rank && c.getSuit() == suit){
+    public boolean cardFound(int rank, Suit suit, List<Card> boardNHoleCards) {
+        for (Card c : boardNHoleCards) {
+            if (c.getRank() == rank && c.getSuit() == suit) {
                 return true;
             }
         }
@@ -170,7 +188,7 @@ public class HoleCardsComparator implements Comparator<HoleCards> {
                 }
             }
         }
-        
+
         Card flushCard = null;
 
         if (card1.getSuit() == flushSuit) {
@@ -184,9 +202,8 @@ public class HoleCardsComparator implements Comparator<HoleCards> {
         }
         return flushCard;
     }
-    
-    // returns null if no flush or returns the flush suit 
 
+    // returns null if no flush or returns the flush suit 
     public Suit getFlushSuit(List<Card> boardNHoleCards) {
         Map<Suit, Integer> map = suitCountMap(boardNHoleCards);
 
